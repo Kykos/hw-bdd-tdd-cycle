@@ -61,4 +61,18 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  def similar
+    if (!params.has_key?(:director))
+      movie_name = Movie.find(params[:id]).title
+      flash[:warning] = "#{movie_name} has no director info"
+      redirect_to movies_path and return
+    end
+    
+    @movies = Movie.where(director: params[:director])
+
+    @all_ratings = Movie.all_ratings
+    @selected_ratings = @all_ratings
+    render 'index'
+  end
+
 end
