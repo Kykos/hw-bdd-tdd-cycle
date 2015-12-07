@@ -14,24 +14,28 @@ module NavigationHelpers
     case page_name
 
     when /^the home\s?page$/
-      '/'
+      '/movies'
       
     when /^the edit page for "(.*)"/
       edit_movie_path(Movie.find_by_title($1).id)
 
-    when /^the details page for "(.*)"/
-      movie_path(Movie.find_by_title($1).id)
-
-=begin      
-    when /^the Similar Movies page for "([^"]+)"$/ 
-      @movie_id = Movie.find_by_title($1).id 
-      movie_similar_path(@movie_id) 
-=end  
+    #when /^the details page for "(.*)"/
+    #  movie_path(Movie.find_by_title($1).id)
+      
+    when /^the details page for "([^"]+)"$/ 
+      movie_path(Movie.find_by_title($1).id) 
 
     when /^the Similar Movies page for "(.*)"/
       director = Movie.where(title: $1).take.director
-      'movies/similar'
-    
+      '/movies/similar'
+      
+
+ 
+=begin
+    when /^the Similar Movies page for "([^"]+)"$/ 
+      @movie_id = Movie.find_by_title($1).id 
+      movies_similar_path(@movie_id) 
+   
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
@@ -43,10 +47,12 @@ module NavigationHelpers
         page_name =~ /^the (.*) page$/
         path_components = $1.split(/\s+/)
         self.send(path_components.push('path').join('_').to_sym)
-      rescue NoMethodError, ArgumentError
-        raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
-          "Now, go and add a mapping in #{__FILE__}"
+      ###rescue NoMethodError, ArgumentError
+      ###  raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
+      ###    "Now, go and add a mapping in #{__FILE__}"
       end
+=end 
+
     end
   end
 end

@@ -18,7 +18,78 @@
 # * http://elabs.se/blog/15-you-re-cuking-it-wrong
 #
 
+################################
+require 'uri'
+require 'cgi'
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "selectors"))
 
+module WithinHelpers
+  def with_scope(locator)
+    locator ? within(*selector_for(locator)) { yield } : yield
+  end
+end
+World(WithinHelpers)
+
+        ###### Scenario 1  ######
+        ###### Scenario 1  ######
+When(/^(?:|I )go to (.+)?/) do |page_name|
+  visit path_to(page_name)
+end
+
+When(/^I fill in "(.*?)" with "(.*?)"$/) do |field, value|
+ fill_in(field, :with => value)
+end
+
+When(/^I press "(.*?)"$/) do |button|
+  click_button(button)
+end
+        ####### Scenario 2 ######
+        ####### Scenario 2 ######
+
+Given(/^(?:|I )am on (.+)$/) do |page_name|
+  visit path_to(page_name)
+end
+
+When(/^I follow "(.*?)"$/) do |link|
+  click_link(link)
+end
+
+#Then(/^I should be on the Similar Movies page for "(.*?)"$/) do |page_name|
+#  current_path.should == path_to(page_name) 
+#end
+
+Then(/^(?:|I )should be on (.+)$/) do |page_name| 
+   current_path = URI.parse(current_url).path 
+   if current_path.respond_to? :should 
+     current_path.should == path_to(page_name) 
+   else 
+     assert_equal path_to(page_name), current_path 
+   end 
+ end 
+
+Then(/^(?:|I )should see "([^"]*)"$/) do |text| 
+   if page.respond_to? :should 
+     page.should have_content(text) 
+   else 
+     assert page.has_content?(text) 
+   end 
+end 
+
+Then(/^(?:|I )should not see "([^"]*)"$/) do |text| 
+   if page.respond_to? :should 
+     page.should have_no_content(text) 
+   else 
+     assert page.has_no_content?(text) 
+   end 
+end 
+
+        ####### Scenario 3 ######
+        ####### Scenario 3 ######
+
+
+################################
+=begin
 require 'uri'
 require 'cgi'
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
@@ -230,6 +301,7 @@ end
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
+####    byebug
     current_path.should == path_to(page_name)
   else
     assert_equal path_to(page_name), current_path
@@ -252,3 +324,5 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
+
+=end
